@@ -1,0 +1,16 @@
+<html>
+	<head>
+		<link href="assets/doomTooltip.css" media="all" rel="stylesheet" type="text/css" />
+		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
+		<script type="text/javascript" src="assets/jquery.doomTooltip.js"></script>
+	</head>
+	<body>
+		<p><span data-tooltip-text="Here is more info about it...">Mouse over here to see more about me.</span></p>
+		<p><a href="#" data-tooltip-text="Here is more info about it 2...">Mouse over here to see more about me 2.</a></p>
+		<p><a href="#" data-tooltip-text="Here is more info about it 3...">Mouse over here to see more about me 3.</a></p>
+	</body>
+
+	<script type="text/javascript">
+		$('[data-tooltip-text]').doomTooltip();
+	</script>
+</html>
