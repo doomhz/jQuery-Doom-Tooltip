@@ -42,6 +42,7 @@
 
 		this.config = {
 			tipId: '',
+            extraClass: '',
 			text: '',
 			position: 'bottom',
 			showOnHover: true,
@@ -61,7 +62,8 @@
 							<div class="doom-tooltip-footer">{tipFooterText}</div>\n\
 						</div>',
 			afterHide: null,
-			offsetOnShow: false
+			offsetOnShow: false,
+            textOnShow: false
 		};
 		this.config = $.extend(this.config, options);
 		this.config.text = this.config.text === '' && $self.attr('data-tooltip-text') ? $self.attr('data-tooltip-text') : this.config.text;
@@ -69,11 +71,12 @@
 		this.config.footerText = this.config.footerText === '' && $self.attr('data-tooltip-footerText') ? $self.attr('data-tooltip-footerText') : this.config.footerText;
 		this.config.tipId = !this.config.tipId ? 'tool-tip-' + new Date().getTime() : this.config.tipId.replace('#', '');
 		this.tipContainer = $(this.config.tooltipHtml
-							 .replace('{tipId}', this.config.tipId)
-							 .replace('{tipHeaderText}', this.config.headerText)
-							 .replace('{tipFooterText}', this.config.footerText)
-							 .replace('{tipText}', this.config.text)
-						    ).css(this.config.style).hide().prependTo('body');
+				      .replace('{tipId}', this.config.tipId)
+				      .replace('{tipHeaderText}', this.config.headerText)
+				      .replace('{tipFooterText}', this.config.footerText)
+				      .replace('{tipText}', this.config.text)
+				    ).css(this.config.style).addClass(this.config.extraClass)
+                                    .hide().prependTo('body');
 
 		this.setOffset();
 
@@ -107,7 +110,11 @@
 	},
 
 	$.fn.showTooltip = function () {
-		if (this.config.offsetOnShow) {
+        var $self = $(this);
+		if (this.config.textOnShow) {
+            $(this.tipContainer).find('div.doom-tooltip-text:first').text($self.attr('data-tooltip-text'));
+		}
+        if (this.config.offsetOnShow) {
 			this.setOffset.call(this);
 		}
 		$(this.tipContainer).show().fadeTo(this.config.fadeTime, 1);
