@@ -3,11 +3,11 @@
 *
 * @author Dumitru Glavan
 * @link http://dumitruglavan.com
-* @version 1.2
+* @version 1.3 (10-SEP-2011)
 * @requires jQuery v1.3.2 or later
 *
 * @example: $('#tip-pointer').doomTooltip({
-*				tipId:'#doom-tooltip-auto',
+*    			tipId:'#doom-tooltip-auto',
 *				headerText: 'Doom Tooltip Header',
 *				text:'Great success from the dark side content text :)',
 *				footerText: 'Doom Tooltip Footer',
@@ -54,6 +54,7 @@
 			hideOnClick: false,
 			style: {'position':'absolute'},
 			topMargin: 5,
+            leftMargin: 0,
 			headerText: '',
 			footerText: '',
 			tooltipHtml: '<div class="doom-tooltip-cnt" id="{tipId}">\n\
@@ -70,13 +71,20 @@
 		this.config.headerText = this.config.headerText === '' && $self.attr('data-tooltip-headerText') ? $self.attr('data-tooltip-headerText') : this.config.headerText;
 		this.config.footerText = this.config.footerText === '' && $self.attr('data-tooltip-footerText') ? $self.attr('data-tooltip-footerText') : this.config.footerText;
 		this.config.tipId = !this.config.tipId ? 'tool-tip-' + new Date().getTime() : this.config.tipId.replace('#', '');
-		this.tipContainer = $(this.config.tooltipHtml
-				      .replace('{tipId}', this.config.tipId)
-				      .replace('{tipHeaderText}', this.config.headerText)
-				      .replace('{tipFooterText}', this.config.footerText)
-				      .replace('{tipText}', this.config.text)
-				    ).css(this.config.style).addClass(this.config.extraClass)
-                                    .hide().prependTo('body');
+
+        var $existentTip = $('#' + this.config.tipId);
+
+        if ($existentTip.length) {
+            this.tipContainer = $existentTip;
+        } else {
+            this.tipContainer = $(this.config.tooltipHtml
+							 .replace('{tipId}', this.config.tipId)
+							 .replace('{tipHeaderText}', this.config.headerText)
+							 .replace('{tipFooterText}', this.config.footerText)
+							 .replace('{tipText}', this.config.text)
+						    ).css(this.config.style).addClass(this.config.extraClass)
+                            .hide().prependTo('body');
+        }
 
 		this.setOffset();
 
@@ -112,7 +120,7 @@
 	$.fn.showTooltip = function () {
         var $self = $(this);
 		if (this.config.textOnShow) {
-            $(this.tipContainer).find('div.doom-tooltip-text:first').text($self.attr('data-tooltip-text'));
+            $(this.tipContainer).find('div.doom-tooltip-text:first').html($self.attr('data-tooltip-text'));
 		}
         if (this.config.offsetOnShow) {
 			this.setOffset.call(this);
@@ -133,19 +141,19 @@
 		var $self = $(this), pointerOffset = $self.offset(), left = 0, top = 0;
 		switch (this.config.position) {
 			case 'left':
-				left = pointerOffset.left - this.tipContainer.width() - this.config.topMargin;
-				top = pointerOffset.top - parseInt($self.height()/2);
+				left = pointerOffset.left - this.tipContainer.width() + this.config.leftMargin;
+				top = pointerOffset.top + parseInt($self.height()/2) - (this.tipContainer.height()/2) + this.config.topMargin;
 				break;
 			case 'right':
-				left = pointerOffset.left + $self.width() + this.config.topMargin;
-				top = pointerOffset.top - parseInt($self.height()/2);
+				left = pointerOffset.left + parseInt($self.width()) + this.config.leftMargin;
+				top = pointerOffset.top + parseInt($self.height()/2) + this.config.topMargin;
 				break;
 			case 'top':
-				left = (pointerOffset.left + parseInt($self.width()/2) - parseInt(this.tipContainer.width()/2));
-				top = pointerOffset.top - this.config.topMargin - this.tipContainer.height();
+				left = (pointerOffset.left + parseInt($self.width()/2) - parseInt(this.tipContainer.width()/2))  + this.config.leftMargin;
+				top = pointerOffset.top + this.config.topMargin - this.tipContainer.height();
 				break;
 			default:
-				left = (pointerOffset.left + parseInt($self.width()/2) - parseInt(this.tipContainer.width()/2));
+				left = (pointerOffset.left + parseInt($self.width()/2) - parseInt(this.tipContainer.width()/2)) + this.config.leftMargin;
 				top = pointerOffset.top + parseInt($(this).height()) + this.config.topMargin;
 				break;
 		}
